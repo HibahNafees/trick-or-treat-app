@@ -1,0 +1,16 @@
+{
+  "appId": "com.hibahnafees.trickortreat",
+  "appName": "Trick or Treat",
+  "webDir": "www",
+  "backgroundColor": "#1a120d",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SystemBars": {
+      "hidden": true,
+      "style": "DARK",
+      "insetsHandling": "css"
+    }
+  }
+}

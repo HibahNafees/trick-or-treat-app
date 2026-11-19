@@ -1,0 +1,20 @@
+{
+  "name": "trick-or-treat-app",
+  "version": "1.0.0",
+  "description": "Trick or Treat Halloween game as an Android app (Capacitor)",
+  "scripts": {
+    "sync": "cap sync android",
+    "open": "cap open android"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2"
+  },
+  "private": true
+}
