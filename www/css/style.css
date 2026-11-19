@@ -726,7 +726,7 @@ body {
   z-index: 20;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: rgba(18, 11, 7, 0.97);
+  background: rgb(18, 11, 7);
   padding:
     calc(var(--safe-top) + 16px)
     calc(var(--safe-right) + 16px)
