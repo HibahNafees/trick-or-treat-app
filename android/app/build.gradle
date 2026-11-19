@@ -1,5 +1,17 @@
 apply plugin: 'com.android.application'
 
+// Release signing details live in android/keystore.properties (git-ignored), not in this file.
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
+def keystoreFile(String path) {
+    // Gradle doesn't expand "~", so do it here.
+    return file(path.startsWith('~') ? System.getProperty('user.home') + path.substring(1) : path)
+}
+
 android {
     namespace = "com.hibahnafees.trickortreat"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,8 +28,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                storeFile keystoreFile(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -40,6 +63,24 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+}
+
+// Fail release builds early with a clear message instead of a vague signing error.
+// Debug builds don't need any of this.
+gradle.taskGraph.whenReady { graph ->
+    if (!graph.allTasks.any { it.project == project && it.name.toLowerCase().contains('release') }) return
+    if (!keystorePropertiesFile.exists()) {
+        throw new GradleException("Missing ${keystorePropertiesFile}: it holds the release signing details.")
+    }
+    ['storeFile', 'storePassword', 'keyAlias', 'keyPassword'].each { key ->
+        def value = keystoreProperties[key]
+        if (!value || value == 'CHANGE_ME') {
+            throw new GradleException("Set ${key} in ${keystorePropertiesFile} before building a release.")
+        }
+    }
+    if (!keystoreFile(keystoreProperties['storeFile']).exists()) {
+        throw new GradleException("Keystore not found: ${keystoreProperties['storeFile']}")
+    }
 }
 
 apply from: 'capacitor.build.gradle'

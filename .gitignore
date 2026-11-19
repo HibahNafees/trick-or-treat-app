@@ -1,3 +1,8 @@
 node_modules/
 .DS_Store
 .idea/
+
+# Release signing: never commit
+keystore.properties
+*.jks
+*.keystore
