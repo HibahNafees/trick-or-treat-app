@@ -1,0 +1,747 @@
+/* Trick or Treat app: the game's styles from the Halloween Midterm site,
+   then the phone app layout at the end. */
+
+:root {
+  --bg: #1a120d;
+  --bg-2: #241911;
+  --card: #2d2017;
+  --card-edge: #4a3424;
+  --text: #f6ead8;
+  --muted: #d8c3a5;
+  --orange: #f39237;
+  --orange-deep: #d9661f;
+  --gold: #f5c25b;
+  --plum: #9c7cc9;
+  --green: #8fbf6a;
+  --red: #e2685a;
+  --radius: 16px;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 14px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(243, 146, 55, 0.35);
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-head: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(243, 146, 55, 0.12), transparent 40%),
+    radial-gradient(circle at 90% 30%, rgba(156, 124, 201, 0.08), transparent 45%);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  line-height: 1.2;
+  color: var(--gold);
+}
+
+h1 { font-size: clamp(2rem, 7vw, 3.2rem); margin: 0 0 0.4em; }
+h2 { font-size: clamp(1.45rem, 4.8vw, 2rem); margin: 2rem 0 0.75rem; }
+h3 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+
+p { margin: 0 0 1rem; }
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0.6rem 1.4rem;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--orange), var(--orange-deep));
+  color: #fff;
+  font: 700 1.05rem/1 var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #8f3e0f;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #8f3e0f;
+}
+
+/* ---------- Trick or Treat game ---------- */
+
+.game {
+  max-width: 720px;
+  margin: 0 auto;
+  scroll-margin-top: 72px;
+}
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.hud .label {
+  color: var(--muted);
+  font-weight: 600;
+  margin-right: 0.3rem;
+}
+
+.hud .sub {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.hud-buttons {
+  display: inline-flex;
+  gap: 0.4rem;
+}
+
+.icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--card-edge);
+  background: var(--card);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.stage {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-edge);
+  box-shadow: var(--shadow);
+  background: #000;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* The scene keeps the image's 3:2 shape; on phones it is wider than the
+   square stage and centred on the doorway, so the door is bigger. */
+.scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.scene > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .game { scroll-margin-top: 116px; }
+  .stage { aspect-ratio: 1 / 1; }
+  .scene { width: 150%; left: -25%; }
+}
+
+/* Doorway opening in door-inside.webp: x 447–730, y 85–615 of 1200×800 */
+.door-panel {
+  position: absolute;
+  left: 37.25%;
+  top: 10.6%;
+  width: 23.6%;
+  height: 66.3%;
+  z-index: 2;
+  transform-origin: left center;
+  transition: transform 0.45s ease-in-out, opacity 0.45s ease-in-out;
+  background:
+    linear-gradient(90deg, transparent 47%, rgba(0, 0, 0, 0.35) 47% 53%, transparent 53%),
+    linear-gradient(180deg, #5a3520, #3e2414);
+  border: 3px solid #2a170c;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.6);
+}
+
+.door-panel::before {
+  content: "";
+  position: absolute;
+  inset: 7% 12%;
+  border: 3px solid rgba(0, 0, 0, 0.35);
+  background: linear-gradient(180deg, transparent 31%, rgba(0, 0, 0, 0.35) 31% 34%, transparent 34% 64%, rgba(0, 0, 0, 0.35) 64% 67%, transparent 67%);
+}
+
+.door-panel::after {
+  content: "";
+  position: absolute;
+  right: 8%;
+  top: 52%;
+  width: 7%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe7a3, #b8862e);
+}
+
+.door-panel.is-open {
+  transform: perspective(900px) rotateY(-75deg);
+  opacity: 0;
+}
+
+.visitor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform 0.6s ease-in, opacity 0.6s ease-in;
+}
+
+.visitor[hidden] { display: none; }
+
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.figure {
+  position: absolute;
+  left: var(--fx, 49%);
+  bottom: 23.5%;
+  height: var(--fh, 63%);
+  aspect-ratio: 100 / 185;
+  transform: translateX(-50%);
+  overflow: visible;
+}
+
+/* The costume is all anyone sees while playing; the kid or monster
+   underneath only appears after the player answers. */
+.costume { transition: opacity 0.35s; }
+.truth { opacity: 0; transition: opacity 0.35s; }
+.scene.reveal .costume { opacity: 0; }
+.scene.reveal .truth { opacity: 1; }
+
+.figure .sad { display: none; }
+.scene.cry .figure .sad { display: inline; }
+.scene.cry .figure .happy { display: none; }
+.scene.cry .tears { animation: tears 0.6s ease-in infinite; }
+
+.scene.flee .visitor { transform: translateX(30%); opacity: 0; }
+.scene.leave .visitor { opacity: 0; transition-delay: 0.6s; }
+.scene.laugh .figure,
+.scene.thanks .figure { animation: hop 0.45s ease-in-out 3; }
+
+.scanner {
+  position: absolute;
+  left: var(--sx);
+  top: var(--sy);
+  width: calc(var(--sr) * 2);
+  height: calc(var(--sr) * 2);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 3px solid #cfe8ff;
+  background: #000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 0 14px rgba(207, 232, 255, 0.6);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Inside the circle: solid black, unless the centre is on the hidden sign.
+   The two signs differ in shape (skull vs person with a check) as well as colour. */
+.scanner .icon {
+  display: none;
+  width: 74%;
+  height: 74%;
+}
+
+.scanner.sign-danger {
+  border-color: #ff6b6b;
+  background: radial-gradient(circle, rgba(255, 70, 70, 0.7), rgba(110, 0, 12, 0.95) 62%, #1a0003);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 0 22px rgba(255, 60, 60, 0.9);
+}
+
+.scanner.sign-safe {
+  border-color: #6dffa0;
+  background: radial-gradient(circle, rgba(80, 255, 140, 0.6), rgba(0, 90, 40, 0.95) 62%, #001a0a);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 0 22px rgba(60, 255, 130, 0.9);
+}
+
+.scanner.sign-danger .icon-skull,
+.scanner.sign-safe .icon-safe { display: block; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.scanner::before,
+.scanner::after {
+  content: "";
+  position: absolute;
+  background: rgba(207, 232, 255, 0.85);
+}
+
+.scanner::before { left: 50%; top: -9px; width: 2px; height: 12px; margin-left: -1px; }
+.scanner::after { top: 50%; left: -9px; height: 2px; width: 12px; margin-top: -1px; }
+
+.scene.reveal .scanner { opacity: 0; }
+
+.bubble,
+.ding,
+.boo-text {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.bubble[hidden],
+.ding[hidden],
+.boo-text[hidden] { display: none; }
+
+.bubble {
+  left: var(--fx, 49%);
+  top: 1%;
+  background: #fff8ec;
+  color: #2a1a10;
+  border-radius: 14px;
+  padding: 0.25em 0.7em;
+  font-weight: 800;
+  font-size: clamp(1rem, 3.8vw, 1.3rem);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  margin-left: -8px;
+  border: 8px solid transparent;
+  border-bottom: 0;
+  border-top-color: #fff8ec;
+}
+
+.ding {
+  left: 49%;
+  top: 30%;
+  font-family: var(--font-head);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 6vw, 2.4rem);
+  color: var(--gold);
+  text-shadow: 0 0 6px #000, 0 0 16px rgba(243, 146, 55, 0.9);
+  animation: ring 0.25s ease-in-out 3;
+}
+
+.boo-text {
+  left: var(--fx, 49%);
+  top: 30%;
+  font-family: var(--font-head);
+  font-weight: 900;
+  font-size: clamp(2rem, 9vw, 3.6rem);
+  color: #fff;
+  text-shadow: 0 0 6px #000, 0 0 18px var(--plum), 3px 3px 0 #6d4fa0;
+  animation: boo 0.9s ease-out forwards;
+}
+
+.pop {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 4;
+  font-weight: 900;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  text-shadow: 0 0 6px #000, 0 2px 0 #000;
+  pointer-events: none;
+  animation: pop-up 1.2s ease-out forwards;
+}
+
+.pop.good { color: var(--green); }
+.pop.bad { color: var(--red); }
+.pop[hidden] { display: none; }
+
+.banner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  width: max-content;
+  max-width: 90%;
+  text-align: center;
+  background: rgba(18, 11, 7, 0.9);
+  border: 2px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 0.6rem 1.2rem;
+  pointer-events: none;
+}
+
+.banner[hidden] { display: none; }
+
+.banner strong {
+  display: block;
+  font-family: var(--font-head);
+  font-size: clamp(1.5rem, 6vw, 2.2rem);
+  color: var(--gold);
+}
+
+.banner span { color: var(--text); font-weight: 600; }
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 16px;
+  background: rgba(18, 11, 7, 0.86);
+  text-align: center;
+}
+
+.overlay[hidden] { display: none; }
+
+/* Solid while paused so nobody can peek through and scan. */
+#pause-screen { background: rgb(18, 11, 7); }
+.overlay h2 { margin: 0 0 0.4rem; }
+
+.overlay p {
+  margin: 0 auto 0.8rem;
+  max-width: 34ch;
+  font-size: 1rem;
+}
+
+.final-stats {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: center;
+  gap: 0.2rem 1.4rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.final-stats span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.final-stats strong {
+  grid-row: 2;
+  font-size: 1.8rem;
+  color: var(--gold);
+}
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  margin: 0.6rem 0;
+  font-weight: 700;
+}
+
+.timebar {
+  flex: 1 1 140px;
+  height: 12px;
+  border-radius: 999px;
+  background: #3a2a1f;
+  overflow: hidden;
+}
+
+.timebar span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold) 40%, var(--green));
+}
+
+.last { color: var(--muted); }
+
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.answers .btn {
+  width: 100%;
+  min-height: 60px;
+  font-size: 1.25rem;
+}
+
+.btn-boo {
+  background: linear-gradient(180deg, var(--plum), #6d4fa0);
+  box-shadow: 0 4px 0 #3f2b63;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+}
+
+
+.credits {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+@keyframes ring {
+  0%, 100% { transform: translateX(-50%) rotate(0); }
+  25% { transform: translateX(-50%) rotate(-6deg); }
+  75% { transform: translateX(-50%) rotate(6deg); }
+}
+
+@keyframes boo {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.5) rotate(-8deg); }
+  25% { opacity: 1; transform: translateX(-50%) scale(1.15) rotate(4deg); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-40%) scale(1); }
+}
+
+@keyframes pop-up {
+  0% { opacity: 0; transform: translateY(10px); }
+  15% { opacity: 1; transform: none; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+@keyframes hop {
+  0%, 100% { transform: translateX(-50%); }
+  50% { transform: translateX(-50%) translateY(-4%); }
+}
+
+@keyframes tears {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(8px); opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door-panel,
+  .visitor,
+  .costume { transition: none; }
+
+  .ding,
+  .boo-text,
+  .pop,
+  .scene.cry .tears,
+  .scene.laugh .figure,
+  .scene.thanks .figure { animation: none; }
+
+  .scene.flee .visitor { transform: none; }
+}
+/* ---------- Phone app layout ---------- */
+
+/* Insets come from Capacitor's SystemBars plugin (--safe-area-inset-*),
+   falling back to env() before it has reported them. */
+:root {
+  --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --safe-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+  --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --safe-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
+}
+
+/* One fixed screen: no page scroll, no pull-to-refresh glow, no zoom gestures. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  height: 100%;
+  padding:
+    calc(var(--safe-top) + 10px)
+    calc(var(--safe-right) + 16px)
+    calc(var(--safe-bottom) + 14px)
+    calc(var(--safe-left) + 16px);
+}
+
+.game {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.game > * { margin: 0; }
+
+/* HUD: labels sit above their values so the row never wraps as the score grows. */
+.hud {
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  line-height: 1.25;
+  font-size: 1.1rem;
+}
+
+.hud .label {
+  display: block;
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* The play area takes all the spare height. The stage fills it, up to 1.65 times taller
+   than it is wide, and the scene inside keeps the picture's 3:2 shape, centred on the
+   doorway. A taller stage just means a bigger door. */
+.play {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stage-box {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage {
+  width: 100%;
+  flex: none;
+}
+
+@supports (container-type: size) {
+  .stage-box { container-type: size; }
+
+  .stage {
+    aspect-ratio: auto;
+    width: min(100cqw, 150cqh);
+    height: min(100cqh, 165cqw);
+    container-type: size;
+  }
+
+  .scene,
+  .stage .scene {
+    width: 150cqh;
+    left: calc(50cqw - 75cqh);
+  }
+}
+
+/* Fixed height, so a long "Last visitor" note never nudges the door. */
+.status {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.25rem 0.9rem;
+  margin: 0.6rem 0 0;
+  line-height: 1.4;
+}
+
+.status .last {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.answers .btn { min-height: 64px; }
+
+.overlay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 2px solid var(--card-edge);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.btn-ghost:active { box-shadow: none; }
+
+/* How to play: a full-screen sheet, only reachable from the start and game-over screens. */
+.help {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(18, 11, 7, 0.97);
+  padding:
+    calc(var(--safe-top) + 16px)
+    calc(var(--safe-right) + 16px)
+    calc(var(--safe-bottom) + 16px)
+    calc(var(--safe-left) + 16px);
+}
+
+.help[hidden] { display: none; }
+
+.help-card {
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.help-card h2 { margin: 0 0 0.75rem; }
+.help-card ul { margin: 0; padding-left: 1.2rem; }
+.help-card li + li { margin-top: 0.4rem; }
+.help-card .btn { width: 100%; margin-top: 1.25rem; }
