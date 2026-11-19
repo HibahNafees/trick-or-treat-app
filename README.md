@@ -21,6 +21,6 @@ Fill in `storePassword` and `keyPassword` there, then:
 
     npm run sync
     cd android
-    JAVA_HOME=~/Library/Java/JavaVirtualMachines/jbr-21.0.11/Contents/Home ./gradlew assembleRelease
+    JAVA_HOME=~/Library/Java/JavaVirtualMachines/jbr-21.0.11/Contents/Home ANDROID_HOME=~/Library/Android/sdk ./gradlew assembleRelease
 
 The signed APK is `android/app/build/outputs/apk/release/app-release.apk`.
