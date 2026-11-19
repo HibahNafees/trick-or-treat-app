@@ -3,6 +3,8 @@
 The Trick or Treat game from the Halloween Midterm site, packaged as an Android
 app with Capacitor 8. Plain HTML/CSS/JS, no framework, works fully offline.
 
+<img src="docs/screenshot.png" width="270" alt="Trick or Treat running on Android: a visitor in a vampire costume at the door, the scanner over their chest, and the Treat and BOO buttons below">
+
 - `www/`: the app's web files. `js/game.js` and `img/door-inside.webp` are
   unchanged copies from `halloween-midterm/public/`.
 - `android/`: the native Android project.
